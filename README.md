@@ -4,6 +4,7 @@
 
 Lamemp3的编码使用CMake方式进行编译
 
-[x] Recording PCM audio data
-[x] Encoding to MP3 data
-[]  Decoding to WAV data
+
+- [x] Recording PCM audio data
+- [x] Encoding to MP3 data
+- []  Decoding to WAV data
