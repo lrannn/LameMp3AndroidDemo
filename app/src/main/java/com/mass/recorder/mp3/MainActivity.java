@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Toast;
 
 import java.io.File;
@@ -16,8 +15,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static com.mass.recorder.mp3.Mp3Encoder.native_encoder_flush;
-import static com.mass.recorder.mp3.Mp3Encoder.native_encoder_init;
 import static com.mass.recorder.mp3.Mp3Encoder.native_encoder_process;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int SAMPLE_COUNT = 512;
     private static final int SAMPLE_RATE = 44100;
     private static final String TEST_FILE_PATH = Environment.getExternalStorageDirectory() + "/test.mp3";
+    private static final String TEST_PCM_PATH = Environment.getExternalStorageDirectory() + "/output.pcm";
 
     private static final String[] PERMISSIONS = {
             Manifest.permission.RECORD_AUDIO,
@@ -38,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private FileOutputStream mStream;
     private boolean isRecording;
     private AudioRecord mAudioRecord;
+    private MediaDecoder mediaDecoder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,38 +47,44 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(PERMISSIONS, 1);
         }
 
-        // Example of a call to a native method
-        findViewById(R.id.btn_start).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mAudioRecord == null) {
-                    setupAudioRecord();
-                    createOutputFile();
-                }
-                int state = native_encoder_init(SAMPLE_RATE, SAMPLE_RATE, 2, 196, 2);
-                Toast.makeText(MainActivity.this, "" + state, Toast.LENGTH_SHORT).show();
-                mAudioRecord.startRecording();
-                new Thread(mRecordRunnable).start();
-                isRecording = true;
-            }
-        });
+//        // Example of a call to a native method
+//        findViewById(R.id.btn_start).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (mAudioRecord == null) {
+//                    setupAudioRecord();
+//                    createOutputFile();
+//                }
+//                int state = native_encoder_init(SAMPLE_RATE, SAMPLE_RATE, 2, 196, 2);
+//                Toast.makeText(MainActivity.this, "" + state, Toast.LENGTH_SHORT).show();
+//                mAudioRecord.startRecording();
+//                new Thread(mRecordRunnable).start();
+//                isRecording = true;
+//            }
+//        });
+//
+//        findViewById(R.id.btn_stop).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (mAudioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING) {
+//                    mAudioRecord.stop();
+//                    isRecording = false;
+//                    native_encoder_flush(mp3Buffer);
+//                    try {
+//                        mStream.write(mp3Buffer);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    Mp3Encoder.native_encoder_close();
+//                }
+//            }
+//        });
 
-        findViewById(R.id.btn_stop).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mAudioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING) {
-                    mAudioRecord.stop();
-                    isRecording = false;
-                    native_encoder_flush(mp3Buffer);
-                    try {
-                        mStream.write(mp3Buffer);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Mp3Encoder.native_encoder_close();
-                }
-            }
-        });
+
+        mediaDecoder = new MediaDecoder();
+        mediaDecoder.setDataSrcPath(TEST_FILE_PATH);
+        mediaDecoder.setDataDestPath(TEST_PCM_PATH);
+        mediaDecoder.start();
 
     }
 

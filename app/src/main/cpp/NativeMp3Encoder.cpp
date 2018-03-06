@@ -1,11 +1,15 @@
 //
 // Created by lrannn on 2018/2/26.
 //
+#include <lame.h>
 #include "jni.h"
+#include "malloc.h"
 #include "lame.h"
+#include "android/log.h"
 
 #define  INIT_FAILED -1
 #define  INIT_SUCCESSFUL 0
+
 
 #define func(RETURN_TYPE, NAME, ...) \
   extern "C" { \

@@ -1,11 +1,7 @@
 cmake_minimum_required(VERSION 3.4.1)
 
-
-
 include_directories(src/main/cpp/lame)
-
 aux_source_directory(src/main/cpp/lame SRC_LIST)
-
 
 add_library( # Sets the name of the library.
              native-lib
