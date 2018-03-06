@@ -7,4 +7,5 @@ Lamemp3的编码使用CMake方式进行编译
 
 - [x] Recording PCM audio data
 - [x] Encoding to MP3 data
-- [ ] Decoding to WAV data
+- [x] Decoding to PCM data (使用了MediaCodec api实现)
+- [ ] Convert PCM data to wav file( add wav header)
